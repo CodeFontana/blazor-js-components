@@ -1,5 +1,7 @@
 # BlazorJSComponents
 
+Targets `net10.0` and `net11.0`.
+
 This library enables the use of:
 * Any JavaScript file
 * In any Blazor component
@@ -50,7 +52,7 @@ When the `JS` component first renders, the referenced script will get dynamicall
 ## Collocated JS discovery
 
 > [!NOTE]
-> See the [official Blazor docs](https://learn.microsoft.com/aspnet/core/blazor/javascript-interoperability/location-of-javascript?view=aspnetcore-8.0#load-a-script-from-an-external-javascript-file-js-collocated-with-a-component) for information about JS collocation.
+> See the [official Blazor docs](https://learn.microsoft.com/aspnet/core/blazor/javascript-interoperability/location-of-javascript?view=aspnetcore-10.0#load-a-script-from-an-external-javascript-file-js-collocated-with-a-component) for information about JS collocation.
 
 When a component has a collocated JS file, it can be discovered automatically without having to hard-code a value for the `Src` parameter. To enable this:
 

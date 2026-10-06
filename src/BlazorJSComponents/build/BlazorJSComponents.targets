@@ -10,7 +10,7 @@
 
   <Target
     Name="_ComputeCallerFileNamePrefix"
-    DependsOnTargets="InitializeSourceRootMappedPaths"
+    DependsOnTargets="ResolveProjectReferences;InitializeSourceRootMappedPaths"
     Condition="'$(SourceControlInformationFeatureSupported)' == 'true'">
 
     <ComputeCallerFileNamePrefix SourceRoot="@(SourceRoot)" ProjectDir="$(ProjectDir)">
