@@ -17,7 +17,7 @@ Here are some of the main features:
 Start by installing the package from NuGet:
 
 ```sh
-dotnet add package BlazorJSComponents
+dotnet add package CodeFoxtrot.BlazorJSComponents
 ```
 
 Next, in your Blazor app's `Program.cs`, add the required services:
