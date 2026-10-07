@@ -19,6 +19,16 @@
 
   </Target>
 
+  <!-- AspNetCore.App has no browser-wasm runtime pack. Drop the transitive framework reference before the SDK resolves it. -->
+  <Target Name="_RemoveAspNetCoreAppFrameworkReferenceForWebAssembly"
+          AfterTargets="AddTransitiveFrameworkReferences"
+          BeforeTargets="ResolveFrameworkReferences"
+          Condition="'$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true'">
+    <ItemGroup>
+      <FrameworkReference Remove="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+  </Target>
+
   <Target
     Name="_EmbedAssemblyStaticAssetInfo" 
     BeforeTargets="PrepareForBuild"
