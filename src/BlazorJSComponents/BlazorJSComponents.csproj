@@ -11,7 +11,7 @@
     <Product>BlazorJSComponents</Product>
     <Description>Use any JavaScript file in any Blazor component, including static server rendering, with collocated JS discovery and JS components.</Description>
     <Copyright>Copyright © CodeFoxtrot $([System.DateTime]::UtcNow.Year)</Copyright>
-    <Version>1.0.0</Version>
+    <Version>1.0.0-rc.1</Version>
     <PackageTags>CodeFoxtrot Blazor BlazorJSComponents JavaScript</PackageTags>
     <PackageProjectUrl>https://github.com/CodeFontana/blazor-js-components</PackageProjectUrl>
     <RepositoryUrl>https://github.com/CodeFontana/blazor-js-components</RepositoryUrl>
