@@ -164,9 +164,15 @@ export function afterWebStarted(blazor) {
             const instanceId = await getOrCreateJSComponent(this._instanceId, src, key);
             this._instanceId = instanceId;
 
-            // Removal during getOrCreateJSComponent leaves bl-args gone and skips disconnectedCallback's dispose.
-            if (!this.isConnected) {
-                this._disposeAfterDisconnect();
+            // The import can outlive this inst. Navigation removes the element; a later
+            // render replaces bl-args-<inst> in place. Either way the captured args are gone.
+            const instCurrent = this.isConnected && this.getAttribute('inst') === newValue;
+            if (!instCurrent) {
+                if (!this.isConnected) {
+                    this._disposeAfterDisconnect();
+                } else if (jsComponentIdsByKey[key] !== instanceId) {
+                    disposeJSComponent(instanceId);
+                }
                 return;
             }
 
