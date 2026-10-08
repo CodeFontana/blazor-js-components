@@ -84,7 +84,9 @@ export function afterWebStarted(blazor) {
 
         entry.instance._dispose();
         delete jsComponentsById[instanceId];
-        delete jsComponentIdsByKey[entry.key];
+        if (jsComponentIdsByKey[entry.key] === instanceId) {
+            delete jsComponentIdsByKey[entry.key];
+        }
     }
 
     function getJSComponentInstance(instanceId) {
@@ -159,7 +161,20 @@ export function afterWebStarted(blazor) {
                 throw new Error("Expected the 'src' attribute to be defined.");
             }
 
-            this._instanceId = await getOrCreateJSComponent(this._instanceId, src, key);
+            const instanceId = await getOrCreateJSComponent(this._instanceId, src, key);
+            this._instanceId = instanceId;
+
+            // The import can outlive this inst. Navigation removes the element; a later
+            // render replaces bl-args-<inst> in place. Either way the captured args are gone.
+            const instCurrent = this.isConnected && this.getAttribute('inst') === newValue;
+            if (!instCurrent) {
+                if (!this.isConnected) {
+                    this._disposeAfterDisconnect();
+                } else if (jsComponentIdsByKey[key] !== instanceId) {
+                    disposeJSComponent(instanceId);
+                }
+                return;
+            }
 
             if (this._instanceId) {
                 let args;
@@ -175,6 +190,15 @@ export function afterWebStarted(blazor) {
         }
 
         disconnectedCallback() {
+            this._disconnectedWhileNavigating = isNavigating;
+            if (!this._instanceId) {
+                return;
+            }
+
+            this._disposeAfterDisconnect();
+        }
+
+        _disposeAfterDisconnect() {
             if (!this._instanceId) {
                 return;
             }
@@ -182,14 +206,18 @@ export function afterWebStarted(blazor) {
             const key = this.getAttribute('key');
             const mayBeInteractive = this.hasAttribute('int');
 
-            if (!isNavigating && key && mayBeInteractive) {
+            if (!this._disconnectedWhileNavigating && key && mayBeInteractive) {
                 const entry = jsComponentsById[this._instanceId];
+                if (!entry) {
+                    return;
+                }
                 entry.pendingDisposal = true;
 
+                const instanceId = this._instanceId;
                 setTimeout(() => {
-                    const entry = jsComponentsById[this._instanceId];
-                    if (entry?.pendingDisposal) {
-                        disposeJSComponent(this._instanceId);
+                    const pending = jsComponentsById[instanceId];
+                    if (pending?.pendingDisposal) {
+                        disposeJSComponent(instanceId);
                     }
                 }, 3000);
             } else {
