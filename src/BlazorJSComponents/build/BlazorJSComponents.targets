@@ -29,9 +29,11 @@
     </ItemGroup>
   </Target>
 
+  <!-- This file is imported for every transitive ProjectReference. ResolveStaticWebAssetsConfiguration exists only when the Razor SDK is imported. -->
   <Target
-    Name="_EmbedAssemblyStaticAssetInfo" 
+    Name="_EmbedAssemblyStaticAssetInfo"
     BeforeTargets="PrepareForBuild"
+    Condition="'$(UsingMicrosoftNETSdkRazor)' == 'true'"
     DependsOnTargets="_ComputeCallerFileNamePrefix;ResolveStaticWebAssetsConfiguration">
 
     <PropertyGroup>
