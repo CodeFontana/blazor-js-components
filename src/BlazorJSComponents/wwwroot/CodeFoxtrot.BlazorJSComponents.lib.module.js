@@ -193,8 +193,8 @@ export function afterWebStarted(blazor) {
                 let args;
                 const argsElement = document.getElementById(`bl-args-${newValue}`);
                 if (argsElement) {
+                    // Keep this text node: enhanced navigation updates it in place and will not recreate it once cleared.
                     args = JSON.parse(argsElement.textContent, reviveJSComponentArgs);
-                    argsElement.textContent = ''; // Clean up the DOM a bit.
                 } else {
                     args = [];
                 }
