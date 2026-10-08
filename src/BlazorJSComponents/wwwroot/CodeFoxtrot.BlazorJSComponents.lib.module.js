@@ -97,7 +97,20 @@ export function afterWebStarted(blazor) {
         return entry.instance;
     }
 
-    function setJSComponentParameters(instanceId, args) {
+    function setJSComponentParameters(instanceId, args, rootId) {
+        // Interactive delivery passes the id of a marker rendered with the component.
+        // Enhanced navigation can remove that marker before this call runs; the revived
+        // element references are then empty and component code throws.
+        if (typeof rootId === "string") {
+            const entry = jsComponentsById[instanceId];
+            if (!entry || !document.getElementById(rootId)) {
+                return;
+            }
+
+            entry.instance.setParameters?.(...(args || []));
+            return;
+        }
+
         const instance = getJSComponentInstance(instanceId);
         instance.setParameters?.(...(args || []));
     }
