@@ -10,13 +10,23 @@
 
   <Target
     Name="_ComputeCallerFileNamePrefix"
-    DependsOnTargets="InitializeSourceRootMappedPaths"
+    DependsOnTargets="ResolveProjectReferences;InitializeSourceRootMappedPaths"
     Condition="'$(SourceControlInformationFeatureSupported)' == 'true'">
 
     <ComputeCallerFileNamePrefix SourceRoot="@(SourceRoot)" ProjectDir="$(ProjectDir)">
       <Output TaskParameter="CallerFileNamePrefix" PropertyName="_CallerFileNamePrefix" />
     </ComputeCallerFileNamePrefix>
 
+  </Target>
+
+  <!-- AspNetCore.App has no browser-wasm runtime pack. Drop the transitive framework reference before the SDK resolves it. -->
+  <Target Name="_RemoveAspNetCoreAppFrameworkReferenceForWebAssembly"
+          AfterTargets="AddTransitiveFrameworkReferences"
+          BeforeTargets="ResolveFrameworkReferences"
+          Condition="'$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true'">
+    <ItemGroup>
+      <FrameworkReference Remove="Microsoft.AspNetCore.App" />
+    </ItemGroup>
   </Target>
 
   <Target

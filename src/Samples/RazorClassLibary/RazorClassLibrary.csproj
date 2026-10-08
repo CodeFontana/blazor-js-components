@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <_ComputeCallerFileNamePrefixAssemblyPath>$(MSBuildThisFileDirectory)..\..\BlazorJSComponents.Tasks\bin\$(Configuration)\netstandard2.0\BlazorJSComponents.Tasks.dll</_ComputeCallerFileNamePrefixAssemblyPath>
@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,6 +21,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\BlazorJSComponents\BlazorJSComponents.csproj" />
+    <ProjectReference Include="..\..\BlazorJSComponents.Tasks\BlazorJSComponents.Tasks.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
   </ItemGroup>
 
   <Import Project="..\..\BlazorJSComponents\build\BlazorJSComponents.targets" />

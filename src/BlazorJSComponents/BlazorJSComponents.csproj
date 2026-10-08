@@ -1,14 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
     <Nullable>enable</Nullable>
-    <PackageId>BlazorJSComponents</PackageId>
+    <PackageId>CodeFoxtrot.BlazorJSComponents</PackageId>
     <IsPackable>true</IsPackable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Authors>MackinnonBuck</Authors>
-    <Version>1.0.0</Version>
-    <RepositoryUrl>https://github.com/MackinnonBuck/blazor-js-components.git</RepositoryUrl>
+    <Authors>CodeFoxtrot</Authors>
+    <Company>CodeFoxtrot</Company>
+    <Product>BlazorJSComponents</Product>
+    <Description>See README.md.</Description>
+    <Copyright>Copyright © CodeFoxtrot $([System.DateTime]::UtcNow.Year)</Copyright>
+    <Version>1.0.0-rc.1</Version>
+    <PackageTags>CodeFoxtrot Blazor BlazorJSComponents JavaScript</PackageTags>
+    <PackageProjectUrl>https://github.com/CodeFontana/blazor-js-components</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/CodeFontana/blazor-js-components</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -16,12 +23,20 @@
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 
+  <!-- BL0016 flags unguarded JS interop. InvokeAsync on JS is a wrapper that must propagate those failures. -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net11.0'">
+    <NoWarn>$(NoWarn);BL0016</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -29,20 +44,39 @@
   </ItemGroup>
 
   <ItemGroup>
-    <_BlazorJSComponentsTasksAssemblies Include="..\BlazorJSComponents.Tasks\bin\$(Configuration)\netstandard2.0\*.dll" />
+    <ProjectReference Include="..\BlazorJSComponents.Tasks\BlazorJSComponents.Tasks.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
-    <None Include="@(_BlazorJSComponentsTasksAssemblies)">
-      <Pack>true</Pack>
-      <PackagePath>tools\netstandard2.0\any</PackagePath>
-      <Visible>false</Visible>
-    </None>
     <None Include="build\BlazorJSComponents.targets">
       <Pack>true</Pack>
-      <PackagePath>%(Identity)</PackagePath>
+      <PackagePath>build\$(PackageId).targets</PackagePath>
     </None>
   </ItemGroup>
 
-  <Target Name="_ValidateBlazorJSComponentsTasksAssembliesDiscovered" AfterTargets="AfterBuild">
+  <!-- The tasks output does not exist at evaluation time on a clean build. The outer multi-target pack build has no ResolveProjectReferences target. -->
+  <Target Name="_IncludeBlazorJSComponentsTasksAssemblies"
+          DependsOnTargets="ResolveProjectReferences"
+          BeforeTargets="BeforeBuild"
+          Condition="'$(TargetFramework)' != '' and '$(_BlazorJSComponentsTasksAssembliesIncluded)' != 'true'">
+    <ItemGroup>
+      <_BlazorJSComponentsTasksAssemblies Include="..\BlazorJSComponents.Tasks\bin\$(Configuration)\netstandard2.0\*.dll" />
+      <None Include="@(_BlazorJSComponentsTasksAssemblies)" Pack="true" PackagePath="tools\netstandard2.0\any" Visible="false" />
+    </ItemGroup>
+    <Error Text="The BlazorJSComponents.Tasks project must be built in the '$(Configuration)' configuration" Condition="'@(_BlazorJSComponentsTasksAssemblies)' == ''" />
+    <PropertyGroup>
+      <_BlazorJSComponentsTasksAssembliesIncluded>true</_BlazorJSComponentsTasksAssembliesIncluded>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="_IncludeBlazorJSComponentsTasksAssembliesForPack"
+          BeforeTargets="_GetPackageFiles"
+          Condition="'$(_BlazorJSComponentsTasksAssembliesIncluded)' != 'true'">
+    <ItemGroup>
+      <_BlazorJSComponentsTasksAssemblies Include="..\BlazorJSComponents.Tasks\bin\$(Configuration)\netstandard2.0\*.dll" />
+      <None Include="@(_BlazorJSComponentsTasksAssemblies)" Pack="true" PackagePath="tools\netstandard2.0\any" Visible="false" />
+    </ItemGroup>
     <Error Text="The BlazorJSComponents.Tasks project must be built in the '$(Configuration)' configuration" Condition="'@(_BlazorJSComponentsTasksAssemblies)' == ''" />
   </Target>
 
