@@ -12,7 +12,7 @@
     <Product>BlazorJSComponents</Product>
     <Description>See README.md.</Description>
     <Copyright>Copyright © CodeFoxtrot $([System.DateTime]::UtcNow.Year)</Copyright>
-    <Version>1.0.0-rc.1</Version>
+    <Version>1.0.1-rc.1</Version>
     <PackageTags>CodeFoxtrot Blazor BlazorJSComponents JavaScript</PackageTags>
     <PackageProjectUrl>https://github.com/CodeFontana/blazor-js-components</PackageProjectUrl>
     <RepositoryUrl>https://github.com/CodeFontana/blazor-js-components</RepositoryUrl>
