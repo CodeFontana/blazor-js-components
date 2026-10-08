@@ -50,9 +50,10 @@
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <!-- NuGet drops build/{id}.targets when buildTransitive/{id}.targets exists. Both copies are this file so direct and transitive consumers get the WebAssembly framework-reference removal. -->
     <None Include="build\BlazorJSComponents.targets">
       <Pack>true</Pack>
-      <PackagePath>build\$(PackageId).targets</PackagePath>
+      <PackagePath>build\$(PackageId).targets;buildTransitive\$(PackageId).targets</PackagePath>
     </None>
   </ItemGroup>
 
