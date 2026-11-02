@@ -22,6 +22,7 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <DebugType>embedded</DebugType>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <!-- BL0016 flags unguarded JS interop. InvokeAsync on JS is a wrapper that must propagate those failures. -->
