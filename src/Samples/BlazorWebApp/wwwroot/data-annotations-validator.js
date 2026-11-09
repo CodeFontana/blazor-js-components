@@ -1,7 +1,6 @@
-﻿import { Component } from '/_content/BlazorJSComponents/component.mjs';
-import Ajv from 'https://esm.sh/ajv@4.11.8';
+﻿import Ajv from 'https://esm.sh/ajv@4.11.8';
 
-export default class extends Component {
+export default class extends BlazorJSComponents.Component {
     setParameters({ validationErrorList }, schema) {
         const ajv = new Ajv({
             allErrors: true,

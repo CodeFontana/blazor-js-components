@@ -226,10 +226,12 @@ In interactive scenarios, you can invoke methods on JS components. Here's an exa
 
 ### Alternative method for loading the `Component` base type
 
-By default, the library defines a global `BlazorJSComponents.Component` type on the `window` object so it can be accessed anywhere. An alternative is to import the `Component` type directly:
+By default, the library defines a global `BlazorJSComponents.Component` type on the `window` object so it can be accessed anywhere. App modules, including the sample form validator, extend that global.
+
+A module served from the same directory as `component.mjs` can import it with a relative URL. The library initializer does this. A specifier that starts with `/` is resolved from the site origin, so it does not follow a non-root `<base href>`.
 
 ```js
-import { Component } from '/_content/BlazorJSComponents/component.mjs';
+import { Component } from './component.mjs';
 
 export default class extends Component {
   // ...
